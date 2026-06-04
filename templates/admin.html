@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Painel Admin - ASTRAEL PHARMA{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+        <h2>Dashboard Administrativo</h2>
+        <p class="text-muted">Gerencie o catálogo e o estoque de produtos.</p>
+    </div>
+    <a href="{{ url_for('novo_produto') }}" class="btn btn-primary" style="width: auto;">+ Novo Produto</a>
+</div>
+
+<div class="dashboard-cards">
+    <div class="dash-card">
+        <h3>Total Cadastrado</h3>
+        <p>{{ total_produtos }}</p>
+    </div>
+    <div class="dash-card">
+        <h3>Produtos Ativos</h3>
+        <p style="color: var(--pix-green);">{{ produtos_ativos }}</p>
+    </div>
+    <div class="dash-card">
+        <h3>Sem Estoque</h3>
+        <p style="color: var(--danger);">{{ produtos_sem_estoque }}</p>
+    </div>
+    <div class="dash-card">
+        <h3>Valor em Estoque</h3>
+        <p style="color: var(--accent-blue); font-size: 1.5rem;">R$ {{ "%.2f"|format(valor_estoque) }}</p>
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Imagem</th>
+                <th>Produto</th>
+                <th>Preço</th>
+                <th>Estoque</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produto in produtos %}
+            <tr style="opacity: {{ '1' if produto.ativo else '0.5' }};">
+                <td>#{{ produto.id }}</td>
+                <td>
+                    {% if produto.imagem_url %}
+                    <img src="{{ produto.imagem_url }}" alt="Img" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                    {% else %}
+                    <div style="width: 40px; height: 40px; background: #333; border-radius: 4px;"></div>
+                    {% endif %}
+                </td>
+                <td>
+                    <strong>{{ produto.nome }}</strong><br>
+                    <span style="font-size: 0.8rem; color: var(--primary-purple);">{{ produto.categoria }}</span>
+                </td>
+                <td>R$ {{ "%.2f"|format(produto.preco) }}</td>
+                <td>
+                    {% if produto.quantidade <= 0 %}
+                    <span style="color: var(--danger); font-weight: bold;">0</span>
+                    {% else %}
+                    {{ produto.quantidade }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if produto.ativo %}
+                    <span style="color: var(--pix-green);">Ativo</span>
+                    {% else %}
+                    <span style="color: var(--text-muted);">Inativo</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="{{ url_for('toggle_produto', produto_id=produto.id) }}" class="btn btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                            {{ 'Desativar' if produto.ativo else 'Ativar' }}
+                        </a>
+                        <a href="{{ url_for('editar_produto', produto_id=produto.id) }}" class="btn btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; background: var(--accent-blue);">Editar</a>
+                        <a href="{{ url_for('deletar_produto', produto_id=produto.id) }}" class="btn btn-danger btn-delete" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Excluir</a>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 2rem;">Nenhum produto cadastrado ainda.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

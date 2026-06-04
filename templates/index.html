@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Catálogo - ASTRAEL PHARMA{% endblock %}
+
+{% block content %}
+<h2>Nossos Produtos</h2>
+<p class="text-muted" style="margin-bottom: 2rem;">Explore nossos medicamentos e produtos de saúde disponíveis.</p>
+
+<div class="products-grid">
+    {% for produto in produtos %}
+    <div class="product-card">
+        <div class="product-img">
+            {% if produto.imagem_url %}
+            <img src="{{ produto.imagem_url }}" alt="{{ produto.nome }}" style="width: 100%; height: 100%; object-fit: cover;">
+            {% else %}
+            <span>Sem Imagem</span>
+            {% endif %}
+        </div>
+        <div class="product-info">
+            <div class="product-category">{{ produto.categoria or 'Geral' }}</div>
+            <h3 class="product-title">{{ produto.nome }}</h3>
+            <p class="product-desc">{{ produto.descricao }}</p>
+            
+            <div class="product-price-row">
+                <span class="product-price">R$ {{ "%.2f"|format(produto.preco) }}</span>
+                <span class="product-stock">{{ produto.quantidade }} unid.</span>
+            </div>
+            
+            {% if produto.quantidade > 0 %}
+            <form action="{{ url_for('add_to_carrinho', produto_id=produto.id) }}" method="POST">
+                <button type="submit" class="btn btn-primary">Adicionar ao Carrinho</button>
+            </form>
+            {% else %}
+            <button class="btn btn-primary" disabled>Indisponível</button>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <p>Nenhum produto disponível no momento.</p>
+    {% endfor %}
+</div>
+{% endblock %}

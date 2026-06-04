@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Seu Carrinho - ASTRAEL PHARMA{% endblock %}
+
+{% block content %}
+<h2>Seu Carrinho de Compras</h2>
+<p class="text-muted" style="margin-bottom: 2rem;">Revise os itens antes de finalizar seu pedido.</p>
+
+{% if itens %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Preço Unit.</th>
+                <th>Qtd</th>
+                <th>Subtotal</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in itens %}
+            <tr>
+                <td><strong>{{ item.produto.nome }}</strong></td>
+                <td>R$ {{ "%.2f"|format(item.produto.preco) }}</td>
+                <td>{{ item.quantidade }}</td>
+                <td>R$ {{ "%.2f"|format(item.valor_item) }}</td>
+                <td>
+                    <a href="{{ url_for('remove_from_carrinho', produto_id=item.produto.id) }}" class="btn btn-danger" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Remover</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="text-align: right; font-size: 1.1rem; padding: 1rem 1rem 0; color: var(--text-muted);">
+        Subtotal: R$ {{ "%.2f"|format(subtotal) }}<br>
+        Frete (Fixo SP): R$ {{ "%.2f"|format(frete) }}
+    </div>
+    <div class="cart-total">
+        Total Geral: R$ {{ "%.2f"|format(total) }}
+    </div>
+</div>
+
+<div style="display: flex; gap: 1rem; justify-content: flex-end;">
+    <a href="{{ url_for('limpar_carrinho') }}" class="btn btn-danger btn-delete">Esvaziar Carrinho</a>
+    <a href="{{ url_for('checkout') }}" class="btn btn-pix" style="padding: 0.8rem 2rem;">Ir para Checkout</a>
+</div>
+
+{% else %}
+<div class="pix-container" style="border-color: var(--border-color);">
+    <h3>Seu carrinho está vazio</h3>
+    <p class="text-muted" style="margin: 1rem 0;">Adicione produtos para poder finalizar a compra.</p>
+    <a href="{{ url_for('index') }}" class="btn btn-primary" style="display: inline-block; width: auto;">Ver Produtos</a>
+</div>
+{% endif %}
+{% endblock %}

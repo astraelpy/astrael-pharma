@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ acao }} Produto - Admin{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <h2>{{ acao }} Produto</h2>
+    <p class="text-muted" style="margin-bottom: 2rem;">Preencha os dados do produto.</p>
+
+    <div class="dash-card">
+        <form method="POST">
+            <div class="form-group">
+                <label for="nome">Nome do Produto</label>
+                <input type="text" id="nome" name="nome" class="form-control" value="{{ produto.nome if produto else '' }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="categoria">Categoria</label>
+                <input type="text" id="categoria" name="categoria" class="form-control" value="{{ produto.categoria if produto else '' }}">
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="preco">Preço (R$)</label>
+                    <input type="number" step="0.01" min="0" id="preco" name="preco" class="form-control" value="{{ produto.preco if produto else '' }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="quantidade">Quantidade em Estoque</label>
+                    <input type="number" min="0" step="1" id="quantidade" name="quantidade" class="form-control" value="{{ produto.quantidade if produto else '' }}" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="descricao">Descrição</label>
+                <textarea id="descricao" name="descricao" class="form-control" rows="4">{{ produto.descricao if produto else '' }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="imagem_url">URL da Imagem</label>
+                <input type="url" id="imagem_url" name="imagem_url" class="form-control" value="{{ produto.imagem_url if produto else '' }}" placeholder="https://exemplo.com/imagem.jpg">
+            </div>
+            
+            <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
+                <input type="checkbox" id="ativo" name="ativo" {% if not produto or produto.ativo %}checked{% endif %} style="width: auto;">
+                <label for="ativo" style="margin: 0; cursor: pointer;">Produto Ativo (Visível na loja)</label>
+            </div>
+            
+            <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                <a href="{{ url_for('admin') }}" class="btn" style="background: #333; color: white;">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Salvar Produto</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

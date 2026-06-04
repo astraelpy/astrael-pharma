@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - ASTRAEL PHARMA{% endblock %}
+
+{% block content %}
+<h2>Finalizar Pedido</h2>
+<p class="text-muted" style="margin-bottom: 2rem;">Preencha seus dados para entrega e gere seu pedido via WhatsApp.</p>
+
+{% if sucesso %}
+<div class="pix-container">
+    <h3 style="color: var(--pix-green); margin-bottom: 1rem;">Pedido Gerado com Sucesso!</h3>
+    <p>Seu pedido já foi reservado. Para concluir, faça o pagamento via Pix para a chave abaixo:</p>
+    
+    <div class="pix-key">pix@astraelpharma.com</div>
+    
+    <p class="text-muted" style="margin-top: 1rem; margin-bottom: 2rem;">
+        Após realizar o pagamento, clique no botão abaixo para enviar o comprovante e os detalhes do seu pedido para o nosso WhatsApp <strong>(11) 94543-3785</strong>.
+    </p>
+    
+    <a href="{{ link_whatsapp }}" target="_blank" class="btn btn-pix" style="padding: 1rem 3rem; font-size: 1.2rem;">
+        Enviar Pedido pelo WhatsApp
+    </a>
+</div>
+{% else %}
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <!-- Formulário -->
+    <div class="dash-card">
+        <h3 style="margin-bottom: 1.5rem; color: var(--text-main); font-size: 1.2rem;">Dados de Entrega</h3>
+        <form method="POST">
+            <div class="form-group">
+                <label for="nome">Nome Completo</label>
+                <input type="text" id="nome" name="nome" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="telefone">Telefone / WhatsApp</label>
+                <input type="text" id="telefone" name="telefone" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="endereco">Endereço Completo</label>
+                <input type="text" id="endereco" name="endereco" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="observacao">Observações (opcional)</label>
+                <textarea id="observacao" name="observacao" class="form-control" rows="3"></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-pix">Gerar Pedido via Pix</button>
+        </form>
+    </div>
+    
+    <!-- Resumo do Pedido -->
+    <div class="dash-card">
+        <h3 style="margin-bottom: 1.5rem; color: var(--text-main); font-size: 1.2rem;">Resumo do Pedido</h3>
+        <div class="table-container" style="border: none; background: transparent; margin-bottom: 0;">
+            <table style="margin-bottom: 1rem;">
+                <tbody>
+                    {% for item in itens %}
+                    <tr>
+                        <td style="padding-left: 0;">{{ item.quantidade }}x {{ item.produto.nome }}</td>
+                        <td style="text-align: right; padding-right: 0;">R$ {{ "%.2f"|format(item.produto.preco * item.quantidade) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; margin-bottom: 0.5rem; text-align: right; color: var(--text-muted); font-size: 1rem;">
+                Subtotal: R$ {{ "%.2f"|format(subtotal) }}<br>
+                Frete (Fixo SP): R$ {{ "%.2f"|format(frete) }}
+            </div>
+            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem; color: var(--pix-green);">
+                <span>Total a pagar:</span>
+                <span>R$ {{ "%.2f"|format(total) }}</span>
+            </div>
+        </div>
+        
+        <div style="margin-top: 2rem; padding: 1rem; background: rgba(0, 191, 165, 0.1); border-left: 4px solid var(--pix-green); border-radius: 4px;">
+            <p style="font-size: 0.9rem;"><strong>Pagamento via Pix Manual:</strong> A chave será informada na próxima tela. O pedido será enviado apenas após você enviar o comprovante para o nosso WhatsApp: <strong>(11) 94543-3785</strong>.</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
